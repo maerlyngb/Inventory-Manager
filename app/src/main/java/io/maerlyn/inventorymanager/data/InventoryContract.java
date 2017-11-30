@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
  *
  * @author Maerlyn Broadbent
  */
-class InventoryContract {
+public class InventoryContract {
 
     private InventoryContract() {
     }
@@ -15,24 +15,24 @@ class InventoryContract {
     /**
      * Book Table
      */
-    static final class BookEntry implements BaseColumns {
-        final static String TABLE_NAME = "book";
-        final static String _ID = BaseColumns._ID;
-        final static String COLUMN_BOOK_SUPPLIER_ID = "supplier_id";
-        final static String COLUMN_BOOK_NAME = "name";
-        final static String COLUMN_BOOK_PRICE = "price";
-        final static String COLUMN_BOOK_QUANTITY = "quantity";
-        final static String COLUMN_BOOK_IMAGE = "image";
+    public static final class BookEntry implements BaseColumns {
+        public final static String TABLE_NAME = "book";
+        public final static String _ID = BaseColumns._ID;
+        public final static String COLUMN_BOOK_SUPPLIER_ID = "supplier_id";
+        public final static String COLUMN_BOOK_NAME = "name";
+        public final static String COLUMN_BOOK_PRICE = "price";
+        public final static String COLUMN_BOOK_QUANTITY = "quantity";
+        public final static String COLUMN_BOOK_IMAGE = "image";
     }
 
     /**
      * Supplier Table
      */
-    static final class SupplierEntry implements BaseColumns {
-        final static String TABLE_NAME = "supplier";
-        final static String _ID = BaseColumns._ID;
-        final static String COLUMN_SUPPLIER_NAME = "supplier_name";
-        final static String COLUMN_SUPPLIER_EMAIL = "supplier_email";
-        final static String COLUMN_SUPPLIER_PHONE_NUM = "supplier_phone_num";
+    public static final class SupplierEntry implements BaseColumns {
+        public final static String TABLE_NAME = "supplier";
+        public final static String _ID = BaseColumns._ID;
+        public final static String COLUMN_SUPPLIER_NAME = "supplier_name";
+        public final static String COLUMN_SUPPLIER_EMAIL = "supplier_email";
+        public final static String COLUMN_SUPPLIER_PHONE_NUM = "supplier_phone_num";
     }
 }

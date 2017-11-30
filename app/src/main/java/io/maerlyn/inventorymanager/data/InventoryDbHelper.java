@@ -177,49 +177,18 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
      *
      * @return list of {@link Book} objects
      */
-    public List<Book> getBooks() {
-        List<Book> books = new ArrayList<>();
-
-        // SELECT * FROM book;
-        String SELECT_ALL_BOOKS = SELECT_ALL + SPACE +
-                FROM + SPACE + BookEntry.TABLE_NAME + STATEMENT_END;
-
+    public Cursor getBooks() {
         SQLiteDatabase db = getReadableDatabase();
 
         // execute the query on the database
-        Cursor cursor = db.rawQuery(SELECT_ALL_BOOKS, null);
-        try {
-            while (cursor.moveToNext()) {
-
-                // Create a supplier object for the book
-                // results are small so lazy loading won't make much difference
-                Supplier supplier = getSupplierById(cursor.getInt(cursor.getColumnIndex(
-                        BookEntry.COLUMN_BOOK_SUPPLIER_ID)));
-
-                Book book = new Book(
-                        supplier,
-                        cursor.getString(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_PRICE)),
-                        cursor.getInt(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_QUANTITY)),
-                        cursor.getInt(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_IMAGE))
-                );
-
-                // add book to the list to return
-                books.add(book);
-            }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Error while trying to get books from database", e);
-        } finally {
-            // we need to close the cursor to prevent memory leaks
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-        }
-        return books;
+        return db.query(                // distinct
+                BookEntry.TABLE_NAME,   // table
+                null,                   // columns. null = all
+                null,                   // WHERE
+                null,                   // The values for the WHERE clause
+                null,                   // group by
+                null,                   // having
+                null);                  // order by
     }
 
     /**
@@ -227,40 +196,19 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
      *
      * @return list of {@link Supplier} objects
      */
-    public List<Supplier> getSuppliers() {
-        List<Supplier> suppliers = new ArrayList<>();
-
-        // SELECT * FROM supplier;
-        String SELECT_ALL_BOOKS = SELECT_ALL + SPACE +
-                FROM + SPACE + SupplierEntry.TABLE_NAME + STATEMENT_END;
+    public Cursor getSuppliers() {
 
         SQLiteDatabase db = getReadableDatabase();
 
         // execute the query on the database
-        Cursor cursor = db.rawQuery(SELECT_ALL_BOOKS, null);
-        try {
-            while (cursor.moveToNext()) {
-                Supplier supplier = new Supplier(
-                        cursor.getString(cursor.getColumnIndex(
-                                SupplierEntry.COLUMN_SUPPLIER_NAME)),
-                        cursor.getString(cursor.getColumnIndex(
-                                SupplierEntry.COLUMN_SUPPLIER_EMAIL)),
-                        cursor.getString(cursor.getColumnIndex(
-                                SupplierEntry.COLUMN_SUPPLIER_PHONE_NUM))
-                );
-
-                // add supplier to list to return
-                suppliers.add(supplier);
-            }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Error while trying to get suppliers from database", e);
-        } finally {
-            // we need to close the cursor to prevent memory leaks
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-        }
-        return suppliers;
+        return db.query(                    // distinct
+                SupplierEntry.TABLE_NAME,   // table
+                null,                       // columns. null = all
+                null,                       // WHERE
+                null,                       // The values for the WHERE clause
+                null,                       // group by
+                null,                       // having
+                null);                      // order by
     }
 
     /**
