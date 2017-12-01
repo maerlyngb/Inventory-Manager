@@ -7,9 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.maerlyn.inventorymanager.data.InventoryContract.BookEntry;
 import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
 import io.maerlyn.inventorymanager.model.Book;
@@ -44,9 +41,6 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
     private static final String BR = ")";
     private static final String STATEMENT_END = ";";
     private static final String CONT = "," + SPACE;
-    private static final String SELECT = "SELECT";
-    private static final String SELECT_ALL = SELECT + SPACE + "*";
-    private static final String FROM = "FROM";
 
 
     // DB version. this must be incremented if the schema changes
@@ -91,7 +85,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
         super.onConfigure(db);
 
         // enable foreign key support
-        db.setForeignKeyConstraintsEnabled(true);
+        //db.setForeignKeyConstraintsEnabled(true);
     }
 
     /**
@@ -117,15 +111,15 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                 SupplierEntry.COLUMN_SUPPLIER_PHONE_NUM + SPACE + TEXT +
                 BR + STATEMENT_END;
 
-        int defaultQty = 0;
+        int zero = 0;
 
         /*
         CREATE TABLE book
         (
             _id INTEGER PRIMARY KEY AUTOINCREMENT,
-            supplier_id INTEGER NOT NULL,
+            supplier_id INTEGER,
             name TEXT NOT NULL,
-            price INTEGER NOT NULL,
+            price INTEGER NOT NULL DEFAULT 0,
             quantity INTEGER NOT NULL DEFAULT 0,
             image INTEGER,
             FOREIGN KEY (supplier_id) REFERENCES supplier (_id)
@@ -134,10 +128,10 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
         String CREATE_BOOK_TABLE = CREATE_TABLE + SPACE + BookEntry.TABLE_NAME +
                 BL +
                 BookEntry._ID + SPACE + INTEGER_PRIMARY_KEY_AUTOINCREMENT + CONT +
-                BookEntry.COLUMN_BOOK_SUPPLIER_ID + SPACE + INTEGER_NOT_NULL + CONT +
+                BookEntry.COLUMN_BOOK_SUPPLIER_ID + SPACE + INTEGER + CONT +
                 BookEntry.COLUMN_BOOK_NAME + SPACE + TEXT_NOT_NULL + CONT +
-                BookEntry.COLUMN_BOOK_PRICE + SPACE + INTEGER_NOT_NULL + CONT +
-                BookEntry.COLUMN_BOOK_QUANTITY + SPACE + INTEGER_NOT_NULL + SPACE + DEFAULT + SPACE + defaultQty + CONT +
+                BookEntry.COLUMN_BOOK_PRICE + SPACE + INTEGER_NOT_NULL + SPACE + DEFAULT + SPACE + zero + CONT +
+                BookEntry.COLUMN_BOOK_QUANTITY + SPACE + INTEGER_NOT_NULL + SPACE + DEFAULT + SPACE + zero + CONT +
                 BookEntry.COLUMN_BOOK_IMAGE + SPACE + INTEGER + CONT +
                 FOREIGN_KEY + SPACE + BL + BookEntry.COLUMN_BOOK_SUPPLIER_ID + BR + SPACE +
                 REFERENCES + SPACE + SupplierEntry.TABLE_NAME + SPACE + BL + SupplierEntry._ID + BR +
@@ -170,45 +164,6 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             // recreate database
             onCreate(db);
         }
-    }
-
-    /**
-     * Return a list of all books in the database
-     *
-     * @return list of {@link Book} objects
-     */
-    public Cursor getBooks() {
-        SQLiteDatabase db = getReadableDatabase();
-
-        // execute the query on the database
-        return db.query(                // distinct
-                BookEntry.TABLE_NAME,   // table
-                null,                   // columns. null = all
-                null,                   // WHERE
-                null,                   // The values for the WHERE clause
-                null,                   // group by
-                null,                   // having
-                null);                  // order by
-    }
-
-    /**
-     * Return a list of all suppliers in the database
-     *
-     * @return list of {@link Supplier} objects
-     */
-    public Cursor getSuppliers() {
-
-        SQLiteDatabase db = getReadableDatabase();
-
-        // execute the query on the database
-        return db.query(                    // distinct
-                SupplierEntry.TABLE_NAME,   // table
-                null,                       // columns. null = all
-                null,                       // WHERE
-                null,                       // The values for the WHERE clause
-                null,                       // group by
-                null,                       // having
-                null);                      // order by
     }
 
     /**
