@@ -32,18 +32,37 @@ public class MainActivity extends AppCompatActivity {
                 "books@supplier.com",
                 "0432 345 654");
 
-        Inventory.insertSupplier(newSupplier, this);
+        long supplierId = Inventory.insert(newSupplier, this);
+
+        newSupplier.setId(supplierId);
+        newSupplier.setName("Bob's New Books");
+        Inventory.update(newSupplier, this);
+
+        Supplier loadedSupplier = Inventory.getSupplierById(newSupplier.getId(), this);
+        loadedSupplier.setEmail("newbooks@supplier.com");
+        Inventory.update(loadedSupplier, this);
 
         // create a new book object
         Book newBook = new Book(
-                newSupplier, // supplier
+                loadedSupplier, // supplier
                 "Lord of the Rings", // name
                 523, // price in cents
                 23, // quantity
                 11 // image resource id
         );
 
-        Inventory.addNewBook(newBook, this);
+        long newBookId = Inventory.insert(newBook, this);
+
+        newBook.setId(newBookId);
+        newBook.setName("Dune");
+        Inventory.update(newBook, this);
+
+        Book loadedBook = Inventory.getBookById(newBook.getId(), this);
+        loadedBook.setName("some trash");
+        Inventory.update(loadedBook, this);
+
+        //Inventory.delete(newBook, this);
+        //Inventory.delete(newSupplier, this);
 
         // load all books from the database
         List<Book> books = Inventory.getAllBooks(this);

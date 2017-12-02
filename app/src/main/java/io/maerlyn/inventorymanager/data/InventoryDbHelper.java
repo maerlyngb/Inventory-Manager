@@ -94,6 +94,16 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        createSupplierTable(db);
+        createBookTable(db);
+    }
+
+    /**
+     * Inserts the supplier table into the database.
+     * @param db The SQLiteDatabase the table is being inserted into.
+     */
+
+    private void createSupplierTable(SQLiteDatabase db) {
         /*
         CREATE TABLE supplier
         (
@@ -103,15 +113,22 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             phone_num TEXT
         );
          */
-        String CREATE_SUPPLIER_TABLE = CREATE_TABLE + SPACE + SupplierEntry.TABLE_NAME +
+        db.execSQL(CREATE_TABLE + SPACE + SupplierEntry.TABLE_NAME +
                 BL +
                 SupplierEntry._ID + SPACE + INTEGER_PRIMARY_KEY_AUTOINCREMENT + CONT +
                 SupplierEntry.COLUMN_SUPPLIER_NAME + SPACE + TEXT_NOT_NULL + CONT +
                 SupplierEntry.COLUMN_SUPPLIER_EMAIL + SPACE + TEXT_NOT_NULL + CONT +
                 SupplierEntry.COLUMN_SUPPLIER_PHONE_NUM + SPACE + TEXT +
-                BR + STATEMENT_END;
+                BR + STATEMENT_END);
+    }
 
-        int zero = 0;
+    /**
+     * Inserts the book table into the database.
+     * @param db The SQLiteDatabase the table is being inserted into.
+     */
+
+    private void createBookTable(SQLiteDatabase db) {
+        final int zero = 0;
 
         /*
         CREATE TABLE book
@@ -125,7 +142,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             FOREIGN KEY (supplier_id) REFERENCES supplier (_id)
         );
          */
-        String CREATE_BOOK_TABLE = CREATE_TABLE + SPACE + BookEntry.TABLE_NAME +
+        db.execSQL(CREATE_TABLE + SPACE + BookEntry.TABLE_NAME +
                 BL +
                 BookEntry._ID + SPACE + INTEGER_PRIMARY_KEY_AUTOINCREMENT + CONT +
                 BookEntry.COLUMN_BOOK_SUPPLIER_ID + SPACE + INTEGER + CONT +
@@ -135,11 +152,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                 BookEntry.COLUMN_BOOK_IMAGE + SPACE + INTEGER + CONT +
                 FOREIGN_KEY + SPACE + BL + BookEntry.COLUMN_BOOK_SUPPLIER_ID + BR + SPACE +
                 REFERENCES + SPACE + SupplierEntry.TABLE_NAME + SPACE + BL + SupplierEntry._ID + BR +
-                BR + STATEMENT_END;
-
-        // create database tables
-        db.execSQL(CREATE_SUPPLIER_TABLE);
-        db.execSQL(CREATE_BOOK_TABLE);
+                BR + STATEMENT_END);
     }
 
     /**
@@ -164,144 +177,5 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             // recreate database
             onCreate(db);
         }
-    }
-
-    /**
-     * Insert or Update a book
-     *
-     * @param book to insert or update
-     * @return primary key of the row we updated
-     */
-    public long save(Book book) {
-        SQLiteDatabase db = getWritableDatabase();
-        long bookId = -1;
-
-        db.beginTransaction();
-
-        try {
-            ContentValues values = new ContentValues();
-            values.put(BookEntry.COLUMN_BOOK_NAME, book.getName());
-            values.put(BookEntry.COLUMN_BOOK_PRICE, book.getPrice());
-            values.put(BookEntry.COLUMN_BOOK_QUANTITY, book.getQuantity());
-            values.put(BookEntry.COLUMN_BOOK_IMAGE, book.getImageResourceId());
-            values.put(BookEntry.COLUMN_BOOK_SUPPLIER_ID, book.getSupplier().getId());
-
-            String id = String.valueOf(book.getId());
-
-            // try to update an existing row
-            int rows = db.update(
-                    BookEntry.TABLE_NAME,
-                    values,
-                    BookEntry._ID + " = ?",
-                    new String[]{id});
-
-            if (rows == 1) {
-                // update success
-                bookId = book.getId();
-            } else {
-                // we need to insert a new row
-                bookId = db.insertOrThrow(BookEntry.TABLE_NAME, null, values);
-            }
-
-            db.setTransactionSuccessful();
-
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception while inserting or updating a book", e);
-        } finally {
-            db.endTransaction();
-        }
-        return bookId;
-    }
-
-    /**
-     * Insert or Update a supplier
-     *
-     * @param supplier to insert or update
-     * @return primary key of the row we updated
-     */
-    public long save(Supplier supplier) {
-        SQLiteDatabase db = getWritableDatabase();
-        long supplierId = -1;
-
-        db.beginTransaction();
-
-        try {
-            ContentValues values = new ContentValues();
-            values.put(SupplierEntry.COLUMN_SUPPLIER_NAME, supplier.getName());
-            values.put(SupplierEntry.COLUMN_SUPPLIER_EMAIL, supplier.getEmail());
-            values.put(SupplierEntry.COLUMN_SUPPLIER_PHONE_NUM, supplier.getPhoneNum());
-
-            String id = String.valueOf(supplier.getId());
-
-            // try to update an existing row
-            int rows = db.update(SupplierEntry.TABLE_NAME, values,
-                    SupplierEntry._ID + " = ?", new String[]{id});
-
-            if (rows == 1) {
-                // update success
-                supplierId = supplier.getId();
-            } else {
-                // we need to insert a new row
-                supplierId = db.insertOrThrow(SupplierEntry.TABLE_NAME, null, values);
-            }
-
-            db.setTransactionSuccessful();
-
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception while inserting or updating a supplier", e);
-        } finally {
-            db.endTransaction();
-        }
-        return supplierId;
-    }
-
-    /**
-     * Return a supplier with a given id
-     *
-     * @param supplierId of the supplier to get from the database
-     * @return supplier
-     */
-    public Supplier getSupplierById(long supplierId) {
-        Supplier supplier = null;
-
-        SQLiteDatabase db = getReadableDatabase();
-
-        db.beginTransaction();
-        Cursor cursor = db.query(
-                true,                                       // distinct
-                SupplierEntry.TABLE_NAME,                   // table
-                null,                                       // columns. null = all
-                SupplierEntry._ID + " = ?",                 // WHERE
-                new String[]{String.valueOf(supplierId)},  // The values for the WHERE clause
-                null,                                       // group by
-                null,                                       // having
-                null,                                       // order by
-                null);                                      // having
-        try {
-            if (cursor.getCount() > 0) {
-
-                // we're asking for a distinct row and selecting by id
-                // so we should never receive multiple rows
-                cursor.moveToFirst();
-
-                supplier = new Supplier(
-                        cursor.getInt(cursor.getColumnIndex(
-                                SupplierEntry._ID)),
-                        cursor.getString(cursor.getColumnIndex(
-                                SupplierEntry.COLUMN_SUPPLIER_NAME)),
-                        cursor.getString(cursor.getColumnIndex(
-                                SupplierEntry.COLUMN_SUPPLIER_NAME)),
-                        cursor.getString(cursor.getColumnIndex(
-                                SupplierEntry.COLUMN_SUPPLIER_PHONE_NUM))
-                );
-            }
-
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception while selecting a supplier by ID", e);
-        } finally {
-            db.endTransaction();
-        }
-
-        return supplier;
     }
 }

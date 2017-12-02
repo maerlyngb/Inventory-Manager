@@ -13,6 +13,15 @@ public class Book {
     private int quantity;
     private int imageResourceId;
 
+    public Book(long id, Supplier supplier, String name, int price, int quantity, int imageResourceId) {
+        this.id = id;
+        this.supplier = supplier;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.imageResourceId = imageResourceId;
+    }
+
     public Book(Supplier supplier, String name, int price, int quantity, int imageResourceId) {
         this.supplier = supplier;
         this.name = name;
@@ -33,9 +42,9 @@ public class Book {
         return supplier;
     }
 
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
+//    public void setSupplier(Supplier supplier) {
+//        this.supplier = supplier;
+//    }
 
     public String getName() {
         return name;
@@ -49,9 +58,9 @@ public class Book {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
+//    public void setPrice(int price) {
+//        this.price = price;
+//    }
 
     public String getPriceString() {
         final int centsInDollar = 100;
@@ -63,15 +72,15 @@ public class Book {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+//    public void setQuantity(int quantity) {
+//        this.quantity = quantity;
+//    }
 
     public int getImageResourceId() {
         return imageResourceId;
     }
 
-    public void setImageResourceId(int imageResourceId) {
-        this.imageResourceId = imageResourceId;
-    }
+//    public void setImageResourceId(int imageResourceId) {
+//        this.imageResourceId = imageResourceId;
+//    }
 }

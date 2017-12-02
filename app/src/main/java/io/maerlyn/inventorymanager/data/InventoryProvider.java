@@ -20,44 +20,57 @@ import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
  * @author Maerlyn Broadbent
  */
 public class InventoryProvider extends ContentProvider {
-
-    //log message tag
     public static final String LOG_TAG = InventoryProvider.class.getSimpleName();
 
-    // URI matcher code for the book table
+    // ints representing each valid URI
     private static final int BOOKS = 100;
-
-    // URI matcher code for a single book
     private static final int BOOK_ID = 101;
-
-    // URI matcher code for the supplier table
     private static final int SUPPLIERS = 200;
-
-    // URI matcher code for a single supplier
     private static final int SUPPLIER_ID = 201;
 
+    // used to match a given URI with the ints above
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     // Static initializer.
     static {
+        final String authority = InventoryContract.CONTENT_AUTHORITY;
+
         // list of books
-        uriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY,
-                InventoryContract.PATH_BOOKS, BOOKS);
+        uriMatcher.addURI(authority, InventoryContract.PATH_BOOKS, BOOKS);
 
         // single book by ID
-        uriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY,
-                InventoryContract.PATH_BOOKS + "/#", BOOK_ID);
+        uriMatcher.addURI(authority, InventoryContract.PATH_BOOKS + "/#", BOOK_ID);
 
         // list of suppliers
-        uriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY,
-                InventoryContract.PATH_SUPPLIERS, SUPPLIERS);
+        uriMatcher.addURI(authority, InventoryContract.PATH_SUPPLIERS, SUPPLIERS);
 
         // single supplier by ID
-        uriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY,
-                InventoryContract.PATH_SUPPLIERS + "/#", SUPPLIER_ID);
+        uriMatcher.addURI(authority, InventoryContract.PATH_SUPPLIERS + "/#", SUPPLIER_ID);
     }
 
     private InventoryDbHelper dbHelper;
+
+    /**
+     * Return the MIME type for a given URI
+     *
+     * @param uri to return MIME type for
+     * @return MIME type
+     */
+    @Override
+    public String getType(@NonNull Uri uri) {
+        switch (uriMatcher.match(uri)) {
+            case BOOKS:
+                return BookEntry.CONTENT_LIST_TYPE;
+            case BOOK_ID:
+                return BookEntry.CONTENT_ITEM_TYPE;
+            case SUPPLIERS:
+                return SupplierEntry.CONTENT_LIST_TYPE;
+            case SUPPLIER_ID:
+                return SupplierEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri);
+        }
+    }
 
     @Override
     public boolean onCreate() {
@@ -74,8 +87,7 @@ public class InventoryProvider extends ContentProvider {
      */
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        final int match = uriMatcher.match(uri);
-        switch (match) {
+        switch (uriMatcher.match(uri)) {
             case BOOKS:
                 validateBook(values);
                 return insertRow(uri, values, BookEntry.TABLE_NAME);
@@ -88,55 +100,99 @@ public class InventoryProvider extends ContentProvider {
     }
 
     /**
+     * Insert data into a the inventory database
+     *
+     * @param uri    API URI to direct the data
+     * @param values data to insert
+     * @param table  to insert the data into
+     * @return URI of the inserted data
+     */
+    private Uri insertRow(Uri uri, ContentValues values, String table) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        long newRowId = db.insert(table, null, values);
+
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (newRowId == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+        // Notify all listeners that data has changed
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        // Return the id of the newly inserted row
+        return ContentUris.withAppendedId(uri, newRowId);
+    }
+
+    /**
      * Read data from the inventory database
      *
      * @param uri           API URI to direct the data
      * @param projection    columns to return
-     * @param selection     WHERE clause used to update
+     * @param selection     WHERE clause
      * @param selectionArgs data for the WHERE clause
      * @param sortOrder     result set sorting order
      * @return {@link Cursor} containing the data
      */
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
-                        String sortOrder) {
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor;
 
-        int match = uriMatcher.match(uri);
-        switch (match) {
+        // find out which URI we have been given
+        switch (uriMatcher.match(uri)) {
             case BOOKS:
-                cursor = database.query(BookEntry.TABLE_NAME, projection, selection,
-                        selectionArgs, null, null, sortOrder);
+                // select multiple books
+                cursor = db.query(
+                        BookEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
                 break;
-
             case BOOK_ID:
-                selection = BookEntry._ID + "=?";
-                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                cursor = database.query(BookEntry.TABLE_NAME, projection, selection,
-                        selectionArgs, null, null, sortOrder);
+                // select a single book by id
+                cursor = db.query(BookEntry.TABLE_NAME,
+                        projection,
+                        BookEntry._ID + "=?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
+                        null,
+                        null,
+                        sortOrder);
                 break;
-
             case SUPPLIERS:
-                cursor = database.query(SupplierEntry.TABLE_NAME, projection, selection,
-                        selectionArgs, null, null, sortOrder);
+                // select multiple suppliers
+                cursor = db.query(
+                        SupplierEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
                 break;
-
             case SUPPLIER_ID:
-                selection = SupplierEntry._ID + "=?";
-                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-
-                cursor = database.query(SupplierEntry.TABLE_NAME, projection, selection,
-                        selectionArgs, null, null, sortOrder);
+                // select a single supplier by id
+                cursor = db.query(
+                        SupplierEntry.TABLE_NAME,
+                        projection,
+                        SupplierEntry._ID + "=?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
+                        null,
+                        null,
+                        sortOrder);
                 break;
-
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
-        // Return the cursor
+        // Cursor containing the result set
         return cursor;
     }
 
@@ -230,47 +286,6 @@ public class InventoryProvider extends ContentProvider {
 
         // Return the number of rows deleted
         return rowsDeleted;
-    }
-
-    /**
-     * Return the MIME type for a given URI
-     *
-     * @param uri to return MIME type for
-     * @return MIME type
-     */
-    @Override
-    public String getType(@NonNull Uri uri) {
-        final int match = uriMatcher.match(uri);
-        switch (match) {
-            case BOOKS:
-                return BookEntry.CONTENT_LIST_TYPE;
-            case BOOK_ID:
-                return BookEntry.CONTENT_ITEM_TYPE;
-            case SUPPLIERS:
-                return SupplierEntry.CONTENT_LIST_TYPE;
-            case SUPPLIER_ID:
-                return SupplierEntry.CONTENT_ITEM_TYPE;
-            default:
-                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
-        }
-    }
-
-    private Uri insertRow(Uri uri, ContentValues values, String table) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        long insertedRowId = db.insert(table, null, values);
-
-        // If the ID is -1, then the insertion failed. Log an error and return null.
-        if (insertedRowId == -1) {
-            Log.e(LOG_TAG, "Failed to insert row for " + uri);
-            return null;
-        }
-
-        // Notify all listeners that data has changed
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        // Return the id of the newly inserted row
-        return ContentUris.withAppendedId(uri, insertedRowId);
     }
 
     private int updateRow(Uri uri, ContentValues values, String selection, String[] selectionArgs, String tableName) {
