@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Patterns;
 
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import io.maerlyn.inventorymanager.data.InventoryContract.BookEntry;
 import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
 

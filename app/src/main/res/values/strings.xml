@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">Inventory Manager</string>
+    <string name="unknown_book_title">Unknown book title</string>
+    <string name="insert_dummy_data">Insert Dummy Data</string>
+    <string name="delete_all_data">Delete All Data</string>
+    <string name="suppliers">suppliers</string>
+    <string name="and">and</string>
+    <string name="books_deleted">books deleted</string>
+    <string name="no_data_to_display">We\'re sold out!</string>
+    <string name="restock_helper">Quick, tap the + button to restock</string>
+    <string name="closed_image">Closed Image</string>
+    <string name="title_activity_editor">EditorActivity</string>
+    <string name="discard_conf_msg">Do want to discard your changes?</string>
+    <string name="discard">Discard</string>
+    <string name="continue_editing">Continue Editing</string>
+    <string name="edit_book">Edit book</string>
+    <string name="add_new_book">Add a new book</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirm_request">Are you sure you want to delete this book?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="book_deleted">Book deleted</string>
+    <string name="book_not_deleted">Could not delete book</string>
+    <string name="sell_book">Sell Book</string>
 </resources>

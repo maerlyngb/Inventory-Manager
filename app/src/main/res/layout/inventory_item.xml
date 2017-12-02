@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Inventory Item -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/InventoryListItem">
+
+    <!-- Book Details -->
+    <LinearLayout
+        android:id="@+id/book_detail"
+        style="@style/InventoryListItemInner">
+
+        <!-- Book Name -->
+        <TextView
+            android:id="@+id/book_name"
+            style="@style/InventoryBookName"/>
+
+        <!-- Book Price -->
+        <TextView
+            android:id="@+id/book_price"
+            style="@style/InventoryBookPrice"/>
+    </LinearLayout>
+
+    <!-- Books in inventory -->
+    <TextView
+        android:id="@+id/book_quantity"
+        style="@style/InventoryBookQuantity"/>
+
+    <!-- Sell a book -->
+    <ImageButton
+        android:id="@+id/sell_book"
+        android:contentDescription="@string/sell_book"
+        style="@style/InventoryBookSell"/>
+
+</LinearLayout>

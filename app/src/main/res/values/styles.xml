@@ -3,9 +3,128 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Shared Styles -->
+
+    <style name="MatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="WrapContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FullWidth">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FullHeight">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="InventoryListContainer" parent="MatchParent">
+        <item name="android:background">@color/primaryBackground</item>
+    </style>
+
+    <style name="InventoryListEmptyLayout" parent="MatchParent"></style>
+
+    <style name="InventoryListEmptyImage" parent="WrapContent">
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:src">@drawable/closed</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+    </style>
+
+    <style name="InventoryListEmptyMessage" parent="WrapContent">
+        <item name="android:layout_marginTop">40dp</item>
+        <item name="android:text">@string/no_data_to_display</item>
+        <item name="android:textSize">24sp</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintTop_toBottomOf">@id/closed_image</item>
+    </style>
+
+    <style name="InventoryListEmptyHelper" parent="WrapContent">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:text">@string/restock_helper</item>
+        <item name="android:textSize">16sp</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintTop_toBottomOf">@id/no_data_msg</item>
+    </style>
+
+    <style name="NewBookFab" parent="WrapContent">
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:layout_margin">@dimen/fab_margin</item>
+        <item name="srcCompat">@drawable/ic_add</item>
+    </style>
+
+    <style name="InventoryList" parent="MatchParent">
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">@dimen/sp_small</item>
+        <item name="android:padding">@dimen/sp_small</item>
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+    </style>
+
+    <style name="InventoryListItem" parent="MatchParent">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:descendantFocusability">blocksDescendants</item>
+    </style>
+
+    <style name="InventoryListItemInner" parent="FullWidth">
+        <item name="android:layout_width">@dimen/dp_zero</item>
+        <item name="android:layout_weight">3</item>
+        <item name="android:padding">@dimen/dp_medium</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="InventoryBookName" parent="WrapContent">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">@dimen/text_medium</item>
+    </style>
+
+    <style name="InventoryBookPrice" parent="WrapContent">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/secondaryText</item>
+    </style>
+
+    <style name="InventoryBookQuantity" parent="MatchParent">
+        <item name="android:layout_width">@dimen/dp_zero</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@color/accent100</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="InventoryBookSell" parent="MatchParent">
+        <item name="android:layout_width">@dimen/dp_zero</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@color/primary300</item>
+        <item name="android:src">@drawable/ic_shopping_cart</item>
+    </style>
+
 
 </resources>

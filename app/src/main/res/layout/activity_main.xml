@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/books"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="books" />
+<!-- Inventory Catalog -->
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/InventoryListContainer">
 
-    <TextView
-        android:id="@+id/suppliers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="suppliers" />
+    <!-- Inventory Items -->
+    <ListView
+        android:id="@+id/inventory_list"
+        style="@style/InventoryList" />
+
+    <!-- Button to add a new book to the inventory -->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_new_book"
+        style="@style/NewBookFab" />
 
 
-</LinearLayout>
+    <!-- Displayed when we can't load any data -->
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/empty_view"
+        style="@style/InventoryListEmptyLayout"
+        android:layout_margin="64dp">
+
+        <ImageView
+            android:id="@+id/closed_image"
+            style="@style/InventoryListEmptyImage"
+            android:contentDescription="@string/closed_image"/>
+
+        <!-- No data message -->
+        <TextView
+            android:id="@+id/no_data_msg"
+            style="@style/InventoryListEmptyMessage"/>
+
+        <!-- No data helper message -->
+        <TextView
+            android:id="@+id/no_data_helper"
+            style="@style/InventoryListEmptyHelper" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.design.widget.CoordinatorLayout>

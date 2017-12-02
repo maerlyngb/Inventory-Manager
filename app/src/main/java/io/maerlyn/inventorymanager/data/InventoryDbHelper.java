@@ -44,7 +44,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
 
     // DB version. this must be incremented if the schema changes
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // instance of this class for application use
     private static InventoryDbHelper instance;
