@@ -39,7 +39,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
 
     // DB version. this must be incremented if the schema changes
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // instance of this class for application use
     private static InventoryDbHelper instance;
@@ -80,7 +80,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
         super.onConfigure(db);
 
         // enable foreign key support
-        //db.setForeignKeyConstraintsEnabled(true);
+        db.setForeignKeyConstraintsEnabled(true);
     }
 
     /**
@@ -165,14 +165,6 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int prevVersion, int newVersion) {
-        if (prevVersion != newVersion) {
-            // drop current tables losing all data
-            // TODO: migrate data in production
-            db.execSQL(DROP_TABLE_IF_EXISTS + SPACE + BookEntry.TABLE_NAME);
-            db.execSQL(DROP_TABLE_IF_EXISTS + SPACE + SupplierEntry.TABLE_NAME);
-
-            // recreate database
-            onCreate(db);
-        }
+        // migrate data and update
     }
 }

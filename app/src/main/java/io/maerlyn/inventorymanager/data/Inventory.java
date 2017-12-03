@@ -200,8 +200,8 @@ public class Inventory {
     public static int[] deleteAll(Context context) {
         int[] rowsDeleted = new int[2];
 
-        rowsDeleted[0] = deleteAllSuppliers(context);
         rowsDeleted[1] = deleteAllBooks(context);
+        rowsDeleted[0] = deleteAllSuppliers(context);
 
         return rowsDeleted;
     }

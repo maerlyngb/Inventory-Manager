@@ -29,6 +29,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.maerlyn.inventorymanager.data.Inventory;
 import io.maerlyn.inventorymanager.model.Book;
 import io.maerlyn.inventorymanager.model.Supplier;
@@ -50,9 +52,16 @@ public class EditorActivity extends AppCompatActivity implements
 
     // true if we're adding a new book
     private boolean isNewBook = false;
-    private EditText bookTitle;
-    private EditText bookPrice;
-    private EditText bookQuantity;
+
+    @BindView(R.id.edit_book_name)
+    EditText bookTitle;
+
+    @BindView(R.id.edit_book_price)
+    EditText bookPrice;
+
+    @BindView(R.id.edit_book_quantity)
+    EditText bookQuantity;
+
     private Book book;
 
     // keeps track of whether there have been any data modifications
@@ -69,6 +78,9 @@ public class EditorActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        // bind annotated views
+        ButterKnife.bind(this);
 
         // retrieve the uri passed with the intent
         Intent intent = getIntent();
@@ -88,11 +100,6 @@ public class EditorActivity extends AppCompatActivity implements
             setTitle(getString(R.string.edit_book));
             getLoaderManager().initLoader(EXISTING_BOOK_LOADER, null, this);
         }
-
-        // book input fields
-        bookTitle = findViewById(R.id.edit_book_name);
-        bookPrice = findViewById(R.id.edit_book_price);
-        bookQuantity = findViewById(R.id.edit_book_quantity);
 
         bookTitle.setOnTouchListener(touchListener);
         bookPrice.setOnTouchListener(touchListener);
@@ -234,12 +241,7 @@ public class EditorActivity extends AppCompatActivity implements
         builder.setPositiveButton(R.string.delete, (dialog, id) -> deleteBook());
 
         // cancel delete
-        builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
-            // continue
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton(R.string.cancel, null);
 
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
@@ -304,7 +306,8 @@ public class EditorActivity extends AppCompatActivity implements
 
 
         if (TextUtils.isEmpty(quantityStr)) {
-            quantityStr = "0";
+            Toast.makeText(this, R.string.please_enter_quantity, Toast.LENGTH_SHORT).show();
+            return false;
         }
 
         try {

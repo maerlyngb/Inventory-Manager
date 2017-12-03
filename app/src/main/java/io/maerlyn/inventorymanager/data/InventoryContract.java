@@ -19,6 +19,7 @@ public class InventoryContract {
     public static final String PATH_SUPPLIERS = "suppliers";
     public static final String PATH_BOOKS_DETAIL = PATH_BOOKS + "/detail";
 
+    // ensure this class is never instantiated
     private InventoryContract() {
     }
 

@@ -40,4 +40,5 @@
     <string name="could_not_insert_book">Could not insert book</string>
     <string name="could_not_update_book">Could not update book</string>
     <string name="book_inserted">Book inserted</string>
+    <string name="please_enter_quantity">Please enter a quantity</string>
 </resources>
