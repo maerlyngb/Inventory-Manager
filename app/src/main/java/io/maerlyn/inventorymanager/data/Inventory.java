@@ -12,6 +12,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.maerlyn.inventorymanager.R;
 import io.maerlyn.inventorymanager.data.InventoryContract.BookEntry;
 import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
 import io.maerlyn.inventorymanager.model.Book;
@@ -52,8 +53,6 @@ public class Inventory {
      * @return list of {@link Book} objects
      */
     public static List<Book> getAllBooks(Context context) {
-        List<Book> books = new ArrayList<>();
-
         Cursor cursor = context.getContentResolver().query(
                 BookEntry.CONTENT_URI,
                 BookEntry.COLUMNS_ALL,
@@ -101,7 +100,7 @@ public class Inventory {
                 new String[]{String.valueOf(ContentUris.parseId(uri))},
                 null);
 
-        return cursorToBook(cursor, true, context);
+        return cursorToBook(cursor, true, true, context);
     }
 
     /**
@@ -275,7 +274,7 @@ public class Inventory {
      */
     private static ContentValues bookToContentValues(Book book) {
         ContentValues values = new ContentValues();
-        values.put(BookEntry.COLUMN_BOOK_NAME, book.getName());
+        values.put(BookEntry.COLUMN_BOOK_TITLE, book.getName());
         values.put(BookEntry.COLUMN_BOOK_PRICE, book.getPrice());
         values.put(BookEntry.COLUMN_BOOK_QUANTITY, book.getQuantity());
         values.put(BookEntry.COLUMN_BOOK_IMAGE, book.getImageResourceId());
@@ -304,7 +303,8 @@ public class Inventory {
      * @param context app context
      * @return {@link Book}
      */
-    public static Book cursorToBook(Cursor cursor, boolean shouldMove, Context context) {
+    public static Book cursorToBook(Cursor cursor, boolean shouldMove,
+                                    boolean closeCursor, Context context) {
         Book book = null;
         try {
             if (cursor != null && cursor.getCount() > 0) {
@@ -317,29 +317,49 @@ public class Inventory {
                 long supplierId = cursor.getLong(cursor.getColumnIndex(
                         BookEntry.COLUMN_BOOK_SUPPLIER_ID));
 
+                // get column indexes
+                int titleIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_TITLE);
+                int priceIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE);
+                int quantityIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY);
+                int imageIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_IMAGE);
+
+                // get data if we have the columns, otherwise use a default val
+                String title = titleIndex > -1
+                        ? cursor.getString(titleIndex)
+                        : context.getString(R.string.unknown_title);
+
+                int price = priceIndex > -1
+                        ? cursor.getInt(priceIndex)
+                        : 0;
+
+                int quantity = quantityIndex > -1
+                        ? cursor.getInt(quantityIndex)
+                        : 0;
+
+                int image = imageIndex >= 0
+                        ? cursor.getInt(imageIndex)
+                        : 0;
+
+                // create book object from cursor data
                 book = new Book(
-                        cursor.getLong(cursor.getColumnIndex(
-                                BookEntry._ID)),
+                        cursor.getLong(cursor.getColumnIndex(BookEntry._ID)),
                         getSupplierById(supplierId, context),
-                        cursor.getString(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_PRICE)),
-                        cursor.getInt(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_QUANTITY)),
-                        cursor.getInt(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_IMAGE))
+                        title,
+                        price,
+                        quantity,
+                        image
                 );
             }
 
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception while selecting a supplier by ID", e);
+            Log.e(LOG_TAG, "Exception creating a book from a cursor", e);
         } finally {
-            // we need to close the cursor to prevent memory leaks
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
+            if (closeCursor) {
+                // we need to close the cursor to prevent memory leaks
+                if (cursor != null && !cursor.isClosed()) {
+                    cursor.close();
+                }
             }
-
         }
 
         return book;
@@ -374,7 +394,7 @@ public class Inventory {
             }
 
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception while selecting a supplier by ID", e);
+            Log.e(LOG_TAG, "Exception creating a supplier from a cursor", e);
         } finally {
             // we need to close the cursor to prevent memory leaks
             if (cursor != null && !cursor.isClosed()) {
@@ -405,7 +425,7 @@ public class Inventory {
                 Book book = new Book(
                         getSupplierById(supplierId, context),
                         cursor.getString(cursor.getColumnIndex(
-                                BookEntry.COLUMN_BOOK_NAME)),
+                                BookEntry.COLUMN_BOOK_TITLE)),
                         cursor.getInt(cursor.getColumnIndex(
                                 BookEntry.COLUMN_BOOK_PRICE)),
                         cursor.getInt(cursor.getColumnIndex(
@@ -418,7 +438,7 @@ public class Inventory {
                 books.add(book);
             }
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Error loading books", e);
+            Log.e(LOG_TAG, "Error creating a list of books from a cursor", e);
         } finally {
             // we need to close the cursor to prevent memory leaks
             if (cursor != null && !cursor.isClosed()) {
@@ -443,6 +463,8 @@ public class Inventory {
         try {
             while (cursor != null && cursor.moveToNext()) {
                 Supplier supplier = new Supplier(
+                        cursor.getInt(cursor.getColumnIndex(
+                                SupplierEntry._ID)),
                         cursor.getString(cursor.getColumnIndex(
                                 SupplierEntry.COLUMN_SUPPLIER_NAME)),
                         cursor.getString(cursor.getColumnIndex(
@@ -455,7 +477,7 @@ public class Inventory {
                 suppliers.add(supplier);
             }
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Error loading suppliers", e);
+            Log.e(LOG_TAG, "Error creating a list of suppliers from a cursor", e);
         } finally {
             // we need to close the cursor to prevent memory leaks
             if (cursor != null && !cursor.isClosed()) {
@@ -469,7 +491,8 @@ public class Inventory {
         // Define a projection that specifies the columns from the table we care about.
         String[] projection = {
                 BookEntry._ID,
-                BookEntry.COLUMN_BOOK_NAME,
+                BookEntry.COLUMN_BOOK_SUPPLIER_ID,
+                BookEntry.COLUMN_BOOK_TITLE,
                 BookEntry.COLUMN_BOOK_PRICE,
                 BookEntry.COLUMN_BOOK_QUANTITY};
 
@@ -481,5 +504,42 @@ public class Inventory {
                 null,                   // No selection clause
                 null,                   // No selection arguments
                 null);                  // Default sort order
+    }
+
+    public static Loader<Cursor> getBookDetailCursor(Context context, long id) {
+        return new CursorLoader(
+                context,                        // Parent activity context
+                BookEntry.getBookDetailUri(id),   // Provider content URI to query
+                null,                           // Columns to include in the resulting Cursor
+                null,                           // No selection clause
+                null,                           // No selection arguments
+                null);                          // Default sort order
+    }
+
+    public static Book bookDetailCursorToBook(Cursor cursor) {
+        // get column indexes in cursor
+        int bookTitleIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_TITLE);
+        int bookPriceIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE);
+        int bookQuantityIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY);
+        int bookImageIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_IMAGE);
+        int bookSupplierId = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_SUPPLIER_ID);
+
+        int supplierNameIndex = cursor.getColumnIndex(SupplierEntry.COLUMN_SUPPLIER_NAME);
+        int supplierEmailIndex = cursor.getColumnIndex(SupplierEntry.COLUMN_SUPPLIER_EMAIL);
+        int supplierPhoneIndex = cursor.getColumnIndex(SupplierEntry.COLUMN_SUPPLIER_PHONE_NUM);
+
+        // the supplier of this book
+        Supplier supplier = new Supplier(
+                cursor.getLong(bookSupplierId),
+                cursor.getString(supplierNameIndex),
+                cursor.getString(supplierEmailIndex),
+                cursor.getString(supplierPhoneIndex));
+
+        return new Book(
+                supplier,
+                cursor.getString(bookTitleIndex),
+                cursor.getInt(bookPriceIndex),
+                cursor.getInt(bookQuantityIndex),
+                cursor.getInt(bookImageIndex));
     }
 }

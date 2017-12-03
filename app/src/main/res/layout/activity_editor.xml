@@ -1,41 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="io.maerlyn.inventorymanager.EditorActivity"
-    tools:showIn="@layout/activity_editor">
+    style="@style/BookEditorLayout"
+    tools:context="io.maerlyn.inventorymanager.EditorActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <LinearLayout style="@style/BookEditorLayoutBookEdit">
 
         <!-- Book Name -->
-        <EditText
-            android:id="@+id/edit_book_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Title"
-            android:inputType="textCapWords" />
+        <android.support.design.widget.TextInputLayout style="@style/BookEditorNameLayout">
+
+            <EditText
+                android:id="@+id/edit_book_name"
+                style="@style/BookEditorNameInput" />
+        </android.support.design.widget.TextInputLayout>
 
         <!-- Book Price -->
-        <EditText
-            android:id="@+id/edit_book_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Price"
-            android:inputType="textCapWords" />
+        <android.support.design.widget.TextInputLayout style="@style/BookEditorPriceLayout">
+
+            <EditText
+                android:id="@+id/edit_book_price"
+                style="@style/BookEditorPriceInput" />
+        </android.support.design.widget.TextInputLayout>
 
         <!-- Book Quantity-->
-        <EditText
-            android:id="@+id/edit_book_quantity"
+        <android.support.design.widget.TextInputLayout style="@style/BookEditorQuantityLayout">
+
+            <EditText
+                android:id="@+id/edit_book_quantity"
+                style="@style/BookEditorQuantityInput" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- Adjust book quantity -->
+        <LinearLayout style="@style/BookEditorQuantityAdjustLayout">
+
+            <Button
+                android:id="@+id/sell_book"
+                style="@style/BookEditorQuantityLess" />
+
+            <Button
+                android:id="@+id/order_book"
+                style="@style/BookEditorQuantityMore" />
+        </LinearLayout>
+
+        <!-- Supplier Picker -->
+        <Spinner
+            android:id="@+id/spinner_supplier"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Quantity"
-            android:inputType="textCapWords" />
+            android:layout_height="48dp"
+            android:spinnerMode="dropdown"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- Book Supplier -->
+    <LinearLayout
+        android:id="@+id/supplierLayout"
+        style="@style/SupplierLayout">
+
+        <!-- Supplier Name -->
+        <TextView
+            android:id="@+id/supplier_name"
+            style="@style/SupplierName" />
+
+        <!-- Supplier Actions -->
+        <LinearLayout
+            android:id="@+id/supplier_actions_container"
+            style="@style/SupplierActionsContainer">
+
+            <!-- Sent Supplier an Email -->
+            <TextView
+                android:id="@+id/supplier_email_action"
+                style="@style/SupplierEmailAction"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+            <!-- Call Supplier -->
+            <TextView
+                android:id="@+id/supplier_phone_action"
+                style="@style/SupplierPhoneAction"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+            <!-- Switch Supplier -->
+            <TextView
+                android:id="@+id/supplier_switch_action"
+                style="@style/SupplierSwitchAction"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

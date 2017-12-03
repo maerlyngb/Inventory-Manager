@@ -1,16 +1,11 @@
 package io.maerlyn.inventorymanager.data;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import io.maerlyn.inventorymanager.data.InventoryContract.BookEntry;
 import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
-import io.maerlyn.inventorymanager.model.Book;
-import io.maerlyn.inventorymanager.model.Supplier;
 
 /**
  * Helper class for working with the application database
@@ -44,7 +39,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
 
     // DB version. this must be incremented if the schema changes
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // instance of this class for application use
     private static InventoryDbHelper instance;
@@ -100,6 +95,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
     /**
      * Inserts the supplier table into the database.
+     *
      * @param db The SQLiteDatabase the table is being inserted into.
      */
 
@@ -124,6 +120,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
     /**
      * Inserts the book table into the database.
+     *
      * @param db The SQLiteDatabase the table is being inserted into.
      */
 
@@ -146,7 +143,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                 BL +
                 BookEntry._ID + SPACE + INTEGER_PRIMARY_KEY_AUTOINCREMENT + CONT +
                 BookEntry.COLUMN_BOOK_SUPPLIER_ID + SPACE + INTEGER + CONT +
-                BookEntry.COLUMN_BOOK_NAME + SPACE + TEXT_NOT_NULL + CONT +
+                BookEntry.COLUMN_BOOK_TITLE + SPACE + TEXT_NOT_NULL + CONT +
                 BookEntry.COLUMN_BOOK_PRICE + SPACE + INTEGER_NOT_NULL + SPACE + DEFAULT + SPACE + zero + CONT +
                 BookEntry.COLUMN_BOOK_QUANTITY + SPACE + INTEGER_NOT_NULL + SPACE + DEFAULT + SPACE + zero + CONT +
                 BookEntry.COLUMN_BOOK_IMAGE + SPACE + INTEGER + CONT +

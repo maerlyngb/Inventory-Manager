@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Radio Button Dialog -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SupplierOptionsDialog">
+
+    <!-- Supplier Options -->
+    <RadioGroup
+        android:id="@+id/radio_group"
+        style="@style/SupplierOptionItems">
+    </RadioGroup>
+
+</LinearLayout>

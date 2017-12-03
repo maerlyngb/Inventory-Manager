@@ -9,9 +9,13 @@ public class Book {
     private long id;
     private Supplier supplier;
     private String name;
-    private int price;
-    private int quantity;
-    private int imageResourceId;
+    private int price = 0;
+    private int quantity = 0;
+    private int imageResourceId = 0;
+
+    public Book() {
+
+    }
 
     public Book(long id, Supplier supplier, String name, int price, int quantity, int imageResourceId) {
         this.id = id;
@@ -42,9 +46,9 @@ public class Book {
         return supplier;
     }
 
-//    public void setSupplier(Supplier supplier) {
-//        this.supplier = supplier;
-//    }
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
 
     public String getName() {
         return name;
@@ -58,29 +62,43 @@ public class Book {
         return price;
     }
 
-//    public void setPrice(int price) {
-//        this.price = price;
-//    }
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
     public String getPriceString() {
         final int centsInDollar = 100;
         double dollarPrice = (double) this.price / centsInDollar;
-        return "$" + String.valueOf(dollarPrice);
+        return String.valueOf(dollarPrice);
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-//    public void setQuantity(int quantity) {
-//        this.quantity = quantity;
-//    }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public int getImageResourceId() {
         return imageResourceId;
     }
 
-//    public void setImageResourceId(int imageResourceId) {
-//        this.imageResourceId = imageResourceId;
-//    }
+    /**
+     * reduce quantity by one if we're not already at zero
+     *
+     * @return false if we're already at zero
+     */
+    public boolean sellBook() {
+        if (this.quantity > 0) {
+            this.quantity--;
+            return true;
+        }
+        return false;
+    }
+
+    // increase quantity by 1
+    public void orderBook() {
+        this.quantity++;
+    }
 }

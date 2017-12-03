@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Inventory Manager</string>
     <string name="unknown_book_title">Unknown book title</string>
-    <string name="insert_dummy_data">Insert Dummy Data</string>
+    <string name="insert_dummy_data">Insert Sample Data</string>
     <string name="delete_all_data">Delete All Data</string>
     <string name="suppliers">suppliers</string>
     <string name="and">and</string>
@@ -23,4 +23,21 @@
     <string name="book_deleted">Book deleted</string>
     <string name="book_not_deleted">Could not delete book</string>
     <string name="sell_book">Sell Book</string>
+    <string name="title">Title</string>
+    <string name="price">Price ($)</string>
+    <string name="quantity">Quantity</string>
+    <string name="unknown_title">Unknown Title</string>
+    <string name="sell_a_book">Sell a book</string>
+    <string name="order_another_book">Order another book</string>
+    <string name="no_books_to_sell">We have no more books to sell</string>
+    <string name="unable_to_update_book">Unable to update book</string>
+    <string name="currency_symbol">$</string>
+    <string name="test">test</string>
+    <string name="please_enter_valid_qty">Please enter a valid quantity</string>
+    <string name="please_enter_valid_price">Please enter a valid price</string>
+    <string name="please_enter_price">Please enter a price</string>
+    <string name="book_updated">Book updated</string>
+    <string name="could_not_insert_book">Could not insert book</string>
+    <string name="could_not_update_book">Could not update book</string>
+    <string name="book_inserted">Book inserted</string>
 </resources>

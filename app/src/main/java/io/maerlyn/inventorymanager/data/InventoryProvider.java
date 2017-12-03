@@ -11,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Patterns;
 
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import io.maerlyn.inventorymanager.data.InventoryContract.BookEntry;
 import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
 
@@ -27,6 +25,7 @@ public class InventoryProvider extends ContentProvider {
     // ints representing each valid URI
     private static final int BOOKS = 100;
     private static final int BOOK_ID = 101;
+    private static final int BOOK_DETAIL_ID = 102;
     private static final int SUPPLIERS = 200;
     private static final int SUPPLIER_ID = 201;
 
@@ -42,6 +41,9 @@ public class InventoryProvider extends ContentProvider {
 
         // single book by ID
         uriMatcher.addURI(authority, InventoryContract.PATH_BOOKS + "/#", BOOK_ID);
+
+        // single book with supplier detail by ID
+        uriMatcher.addURI(authority, InventoryContract.PATH_BOOKS_DETAIL + "/#", BOOK_DETAIL_ID);
 
         // list of suppliers
         uriMatcher.addURI(authority, InventoryContract.PATH_SUPPLIERS, SUPPLIERS);
@@ -64,6 +66,8 @@ public class InventoryProvider extends ContentProvider {
             case BOOKS:
                 return BookEntry.CONTENT_LIST_TYPE;
             case BOOK_ID:
+                return BookEntry.CONTENT_ITEM_TYPE;
+            case BOOK_DETAIL_ID:
                 return BookEntry.CONTENT_ITEM_TYPE;
             case SUPPLIERS:
                 return SupplierEntry.CONTENT_LIST_TYPE;
@@ -158,13 +162,27 @@ public class InventoryProvider extends ContentProvider {
                 break;
             case BOOK_ID:
                 // select a single book by id
-                cursor = db.query(BookEntry.TABLE_NAME,
+                cursor = db.query(
+                        BookEntry.TABLE_NAME,
                         projection,
                         BookEntry._ID + "=?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))},
                         null,
                         null,
                         sortOrder);
+                break;
+            case BOOK_DETAIL_ID:
+                final String sql = "SELECT book._id, book.supplier_id, book.title, book.price, " + "" +
+                        "book.quantity, book.image, supplier.name, supplier.email, supplier.phone_num " +
+                        "FROM book " +
+                        "INNER JOIN SUPPLIER " +
+                        "ON book.supplier_id = supplier._id " +
+                        "WHERE book._id = ?";
+
+                cursor = db.rawQuery(
+                        sql,
+                        new String[]{String.valueOf(ContentUris.parseId(uri))}
+                );
                 break;
             case SUPPLIERS:
                 // select multiple suppliers
@@ -189,7 +207,7 @@ public class InventoryProvider extends ContentProvider {
                         sortOrder);
                 break;
             default:
-                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+                throw new IllegalArgumentException("Selection is not supported for " + uri);
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -318,8 +336,8 @@ public class InventoryProvider extends ContentProvider {
      */
     private void validateBook(ContentValues values) {
         // all books require a name
-        if (values.containsKey(BookEntry.COLUMN_BOOK_NAME)) {
-            String name = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
+        if (values.containsKey(BookEntry.COLUMN_BOOK_TITLE)) {
+            String name = values.getAsString(BookEntry.COLUMN_BOOK_TITLE);
             if (name == null) {
                 throw new IllegalArgumentException("Book requires a valid name");
             }

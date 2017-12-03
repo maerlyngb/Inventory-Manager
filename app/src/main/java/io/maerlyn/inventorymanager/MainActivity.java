@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import io.maerlyn.inventorymanager.data.Inventory;
 import io.maerlyn.inventorymanager.data.InventoryContract;
 import io.maerlyn.inventorymanager.model.Book;
@@ -44,10 +46,11 @@ public class MainActivity extends AppCompatActivity implements
         View emptyView = findViewById(R.id.empty_view);
         inventoryListView.setEmptyView(emptyView);
 
+        // adapter used to display inventory data
         cursorAdapter = new InventoryCursorAdapter(this, null);
         inventoryListView.setAdapter(cursorAdapter);
 
-        // Setup the item click listener
+        // click listener to edit a book's details
         inventoryListView.setOnItemClickListener((adapterView, view, position, id) -> {
             Intent intent = new Intent(MainActivity.this, EditorActivity.class);
 
@@ -68,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements
             startActivity(intent);
         });
 
+        createDefaultSupplier();
+
+        // get inventory data
         getLoaderManager().initLoader(INVENTORY_SUMMARY_LOADER, null, this);
     }
 
@@ -144,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements
     private void deleteAllData() {
         int[] rowsDeleted = Inventory.deleteAll(this);
 
+        // make sure we still have out default supplier
+        createDefaultSupplier();
+
         // display toast showing how many rows were deleted
         Toast.makeText(this, rowsDeleted[0] + " " + getString(R.string.suppliers) +
                         " " + getString(R.string.and) + " " +
@@ -152,27 +161,105 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
+     * Create a default supplier for new books to use
+     */
+    private void createDefaultSupplier() {
+        List<Supplier> suppliers = Inventory.getAllSuppliers(this);
+        if (suppliers.size() < 1) {
+            Supplier emptySupplier = new Supplier(
+                    "No Supplier",
+                    "blank@email.com",
+                    "0000 000 000");
+
+            long supplierId = Inventory.insert(emptySupplier, this);
+            emptySupplier.setId(supplierId);
+        }
+    }
+
+    /**
      * Insert testing data into the database
      */
     private void insertDummyData() {
-        Supplier newSupplier = new Supplier(
-                "Bob's Books",
-                "books@supplier.com",
+
+        Supplier amazon = new Supplier(
+            "Amazon",
+            "books@google.com",
+            "0432 345 634");
+
+        long amazonId = Inventory.insert(amazon, this);
+        amazon.setId(amazonId);
+
+        Supplier googleBooks = new Supplier(
+                "Google Books",
+                "books@google.com",
                 "0432 345 654");
 
-        long supplierId = Inventory.insert(newSupplier, this);
-        newSupplier.setId(supplierId);
+        long supplierId = Inventory.insert(googleBooks, this);
+        googleBooks.setId(supplierId);
 
-        Book newBook = new Book(
-                newSupplier, // supplier
-                "Lord of the Rings", // name
-                523, // price in cents
-                23, // quantity
-                11 // image resource id
+        Book dune = new Book(
+                amazon, // supplier
+                "Dune", // name
+                1199, // price in cents
+                5, // quantity
+                0 // image resource id
+        );
+        long duneId = Inventory.insert(dune, this);
+        dune.setId(duneId);
+
+        Book time = new Book(
+                googleBooks, // supplier
+                "A Brief History Of Time", // name
+                1299, // price in cents
+                7, // quantity
+                0 // image resource id
+        );
+        long timeId = Inventory.insert(time, this);
+        time.setId(timeId);
+
+        Book neuromancer = new Book(
+                amazon, // supplier
+                "Neuromancer", // name
+                1199, // price in cents
+                11, // quantity
+                0 // image resource id
         );
 
-        long newBookId = Inventory.insert(newBook, this);
-        newBook.setId(newBookId);
+        long neuromancerid = Inventory.insert(neuromancer, this);
+        neuromancer.setId(neuromancerid);
+
+        Book animalFarm = new Book(
+                googleBooks, // supplier
+                "Animal Farm", // name
+                99, // price in cents
+                6, // quantity
+                0 // image resource id
+        );
+
+        long animalFarmId = Inventory.insert(animalFarm, this);
+        animalFarm.setId(animalFarmId);
+
+        Book hgg = new Book(
+                googleBooks, // supplier
+                "The Hitchhiker's Guide to the Galaxy", // name
+                999, // price in cents
+                42, // quantity
+                0 // image resource id
+        );
+
+        long hggId = Inventory.insert(hgg, this);
+        hgg.setId(hggId);
+
+        Book timeMachine = new Book(
+                googleBooks, // supplier
+                "The Time Machine", // name
+                999, // price in cents
+                12, // quantity
+                0 // image resource id
+        );
+
+        long timeMachineid = Inventory.insert(timeMachine, this);
+        timeMachine.setId(timeMachineid);
 
     }
 }

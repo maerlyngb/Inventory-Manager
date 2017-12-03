@@ -102,6 +102,8 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/primaryText</item>
         <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="InventoryBookPrice" parent="WrapContent">
@@ -113,6 +115,7 @@
     <style name="InventoryBookQuantity" parent="MatchParent">
         <item name="android:layout_width">@dimen/dp_zero</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:textSize">@dimen/text_medium</item>
         <item name="android:background">@color/accent100</item>
         <item name="android:gravity">center</item>
     </style>
@@ -126,5 +129,110 @@
         <item name="android:src">@drawable/ic_shopping_cart</item>
     </style>
 
+    <style name="BookEditorLayout" parent="MatchParent">
+        <item name="layout_behavior">@string/appbar_scrolling_view_behavior</item>
+    </style>
+
+    <style name="BookEditorLayoutBookEdit" parent="FullWidth">
+        <item name="android:padding">@dimen/dp_medium</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="BookEditorNameLayout" parent="FullWidth">
+    </style>
+
+    <style name="BookEditorNameInput" parent="FullWidth">
+        <item name="android:hint">@string/title</item>
+        <item name="android:inputType">textCapWords</item>
+    </style>
+
+    <style name="BookEditorPriceLayout" parent="FullWidth">
+        <item name="android:layout_marginTop">@dimen/dp_medium</item>
+    </style>
+
+    <style name="BookEditorPriceInput" parent="FullWidth">
+        <item name="android:hint">@string/price</item>
+        <item name="android:inputType">numberDecimal</item>
+    </style>
+
+    <style name="BookEditorQuantityLayout" parent="FullWidth">
+        <item name="android:layout_marginTop">@dimen/dp_medium</item>
+    </style>
+
+    <style name="BookEditorQuantityInput" parent="FullWidth">
+        <item name="android:hint">@string/quantity</item>
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="BookEditorQuantityAdjustLayout" parent="FullWidth">
+        <item name="android:layout_marginTop">@dimen/dp_medium</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="BookEditorQuantityLess" parent="FullWidth">
+        <item name="android:layout_width">@dimen/dp_zero</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:text">@string/sell_a_book</item>
+    </style>
+
+    <style name="BookEditorQuantityMore" parent="FullWidth">
+        <item name="android:layout_width">@dimen/dp_zero</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:text">@string/order_another_book</item>
+    </style>
+
+    <style name="SupplierLayout" parent="FullWidth">
+        <item name="android:background">@color/primaryBackground</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingBottom">@dimen/dp_large</item>
+        <item name="android:paddingTop">@dimen/dp_large</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+    </style>
+
+    <style name="SupplierName" parent="FullWidth">
+        <item name="android:layout_marginBottom">@dimen/dp_large</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">@dimen/sp_large</item>
+    </style>
+
+    <style name="SupplierActionsContainer" parent="FullWidth">
+        <item name="layout_behavior">@string/appbar_scrolling_view_behavior</item>
+        <item name="android:layout_marginBottom">@dimen/dp_small</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+    </style>
+
+    <style name="SupplierActions" parent="WrapContent">
+        <item name="android:layout_width">@dimen/dp_zero</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:textSize">@dimen/sp_medium</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="SupplierEmailAction" parent="SupplierActions">
+        <item name="android:drawableTop">@drawable/ic_mail_outline</item>
+        <item name="android:text">Send Email</item>
+    </style>
+
+    <style name="SupplierPhoneAction" parent="SupplierActions">
+        <item name="android:drawableTop">@drawable/ic_phone</item>
+        <item name="android:text">Call</item>
+    </style>
+
+    <style name="SupplierSwitchAction" parent="SupplierActions">
+        <item name="android:drawableTop">@drawable/ic_compare_arrows</item>
+        <item name="android:text">Change Supplier</item>
+    </style>
+
+    <style name="SupplierOptionsDialog" parent="MatchParent">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_margin">@dimen/dp_small</item>
+    </style>
+
+    <style name="SupplierOptionItems" parent="FullWidth">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
 
 </resources>

@@ -2,22 +2,24 @@ package io.maerlyn.inventorymanager;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.text.TextUtils;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import io.maerlyn.inventorymanager.data.InventoryContract.BookEntry;
+import io.maerlyn.inventorymanager.data.Inventory;
+import io.maerlyn.inventorymanager.model.Book;
+
 
 /**
- * Created by maerlyn on 2/12/17.
+ * Adapter to get inventory data from a cursor and pass it to a ListView
+ *
+ * @author Maerlyn Broadbent
  */
-
 public class InventoryCursorAdapter extends CursorAdapter {
-
-    Context context;
 
     /**
      * Constructs a new {@link InventoryCursorAdapter}.
@@ -27,7 +29,6 @@ public class InventoryCursorAdapter extends CursorAdapter {
      */
     public InventoryCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
-        this.context = context;
     }
 
     /**
@@ -56,24 +57,32 @@ public class InventoryCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
+        Book book = Inventory.cursorToBook(cursor, false, false, context);
+
         TextView nameView = view.findViewById(R.id.book_name);
         TextView priceView = view.findViewById(R.id.book_price);
         TextView quantityView = view.findViewById(R.id.book_quantity);
 
-        // Read the pet attributes from the Cursor for the current pet
-        String name = cursor.getString(cursor.getColumnIndex(BookEntry.COLUMN_BOOK_NAME));
-        String price = cursor.getString(cursor.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE));
-        String quantity = cursor.getString(cursor.getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY));
-
-        // If the pet breed is empty string or null, then use some default text
-        // that says "Unknown breed", so the TextView isn't blank.
-        if (TextUtils.isEmpty(name)) {
-            name = context.getString(R.string.unknown_book_title);
-        }
-
         // Update the TextViews with the attributes for the current pet
-        nameView.setText(name);
-        priceView.setText(price);
-        quantityView.setText(quantity);
+        nameView.setText(book.getName());
+        priceView.setText(context.getString(R.string.currency_symbol) + book.getPriceString());
+        quantityView.setText(String.valueOf(book.getQuantity()));
+
+        AppCompatImageButton sellBook = (AppCompatImageButton) view.findViewById(R.id.sell_book);
+        sellBook.setOnClickListener(btn -> sellBook(book, context));
+    }
+
+    /**
+     * Sell a single book and save updated quantity to db
+     *
+     * @param book    to sell
+     * @param context app context
+     */
+    private void sellBook(Book book, Context context) {
+        if (book.sellBook()) {
+            Inventory.update(book, context);
+        } else {
+            Toast.makeText(context, R.string.no_books_to_sell, Toast.LENGTH_SHORT).show();
+        }
     }
 }
