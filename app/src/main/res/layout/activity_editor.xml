@@ -4,31 +4,50 @@
     style="@style/BookEditorLayout"
     tools:context="io.maerlyn.inventorymanager.EditorActivity">
 
-    <LinearLayout style="@style/BookEditorLayoutBookEdit">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_medium"
+        android:orientation="vertical">
 
-        <!-- Book Name -->
-        <android.support.design.widget.TextInputLayout style="@style/BookEditorNameLayout">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edit_book_name"
-                style="@style/BookEditorNameInput" />
-        </android.support.design.widget.TextInputLayout>
+            <!-- Book Cover Image -->
+            <ImageView
+                android:id="@+id/book_cover_image"
+                style="@style/BookEditorCoverImage" />
 
-        <!-- Book Price -->
-        <android.support.design.widget.TextInputLayout style="@style/BookEditorPriceLayout">
+            <LinearLayout style="@style/BookEditorLayoutBookEdit">
 
-            <EditText
-                android:id="@+id/edit_book_price"
-                style="@style/BookEditorPriceInput" />
-        </android.support.design.widget.TextInputLayout>
+                <!-- Book Name -->
+                <android.support.design.widget.TextInputLayout style="@style/BookEditorNameLayout">
 
-        <!-- Book Quantity-->
-        <android.support.design.widget.TextInputLayout style="@style/BookEditorQuantityLayout">
+                    <EditText
+                        android:id="@+id/edit_book_name"
+                        style="@style/BookEditorNameInput" />
+                </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/edit_book_quantity"
-                style="@style/BookEditorQuantityInput" />
-        </android.support.design.widget.TextInputLayout>
+                <!-- Book Price -->
+                <android.support.design.widget.TextInputLayout style="@style/BookEditorPriceLayout">
+
+                    <EditText
+                        android:id="@+id/edit_book_price"
+                        style="@style/BookEditorPriceInput" />
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Book Quantity-->
+                <android.support.design.widget.TextInputLayout style="@style/BookEditorQuantityLayout">
+
+                    <EditText
+                        android:id="@+id/edit_book_quantity"
+                        style="@style/BookEditorQuantityInput" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- Adjust book quantity -->
         <LinearLayout style="@style/BookEditorQuantityAdjustLayout">
@@ -45,10 +64,8 @@
         <!-- Supplier Picker -->
         <Spinner
             android:id="@+id/spinner_supplier"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:spinnerMode="dropdown"
-            android:visibility="gone" />
+            style="@style/BookEditorSupplierSpinner"/>
+
     </LinearLayout>
 
     <!-- Book Supplier -->

@@ -198,64 +198,65 @@ public class MainActivity extends AppCompatActivity implements
         googleBooks.setId(supplierId);
 
         Book dune = new Book(
-                amazon, // supplier
-                "Dune", // name
+                amazon,
+                "Dune",
                 1199, // price in cents
                 5, // quantity
-                0 // image resource id
+                ImageUtil.getBytes(R.drawable.dune_cover, this)
         );
         long duneId = Inventory.insert(dune, this);
         dune.setId(duneId);
 
         Book time = new Book(
-                googleBooks, // supplier
-                "A Brief History Of Time", // name
+                googleBooks,
+                "A Brief History Of Time",
                 1299, // price in cents
                 7, // quantity
-                0 // image resource id
+                ImageUtil.getBytes(
+                        R.drawable.brief_history_of_time_cover, this)
         );
         long timeId = Inventory.insert(time, this);
         time.setId(timeId);
 
         Book neuromancer = new Book(
-                amazon, // supplier
-                "Neuromancer", // name
+                amazon,
+                "Neuromancer",
                 1199, // price in cents
                 11, // quantity
-                0 // image resource id
+                ImageUtil.getBytes(R.drawable.neuromancer_cover, this)
         );
 
         long neuromancerid = Inventory.insert(neuromancer, this);
         neuromancer.setId(neuromancerid);
 
         Book animalFarm = new Book(
-                googleBooks, // supplier
-                "Animal Farm", // name
+                googleBooks,
+                "Animal Farm",
                 99, // price in cents
                 6, // quantity
-                0 // image resource id
+                ImageUtil.getBytes(R.drawable.animal_farm_cover, this)
         );
 
         long animalFarmId = Inventory.insert(animalFarm, this);
         animalFarm.setId(animalFarmId);
 
         Book hgg = new Book(
-                googleBooks, // supplier
-                "The Hitchhiker's Guide to the Galaxy", // name
+                googleBooks,
+                "The Hitchhiker's Guide to the Galaxy",
                 999, // price in cents
                 42, // quantity
-                0 // image resource id
+                ImageUtil.getBytes(R.drawable.hgg_cover, this)
         );
 
         long hggId = Inventory.insert(hgg, this);
         hgg.setId(hggId);
 
         Book timeMachine = new Book(
-                googleBooks, // supplier
-                "The Time Machine", // name
+                googleBooks,
+                "The Time Machine",
                 999, // price in cents
                 12, // quantity
-                0 // image resource id
+                ImageUtil.getBytes(R.drawable.time_machine_cover, this)
         );
 
         long timeMachineid = Inventory.insert(timeMachine, this);

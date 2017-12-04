@@ -31,7 +31,7 @@
     <string name="order_another_book">Order another book</string>
     <string name="no_books_to_sell">We have no more books to sell</string>
     <string name="unable_to_update_book">Unable to update book</string>
-    <string name="currency_symbol">$</string>
+    <string name="currency_symbol">$ %s</string>
     <string name="test">test</string>
     <string name="please_enter_valid_qty">Please enter a valid quantity</string>
     <string name="please_enter_valid_price">Please enter a valid price</string>

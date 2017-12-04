@@ -12,7 +12,7 @@ import android.provider.BaseColumns;
  */
 public class InventoryContract {
 
-    public static final String CONTENT_AUTHORITY = "io.maerlyn.inventorymanager";
+    static final String CONTENT_AUTHORITY = "io.maerlyn.inventorymanager";
     // base content URI
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_BOOKS = "books";

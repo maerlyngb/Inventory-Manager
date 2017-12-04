@@ -134,7 +134,7 @@
     </style>
 
     <style name="BookEditorLayoutBookEdit" parent="FullWidth">
-        <item name="android:padding">@dimen/dp_medium</item>
+        <item name="android:paddingLeft">@dimen/dp_small</item>
         <item name="android:orientation">vertical</item>
     </style>
 
@@ -143,7 +143,7 @@
 
     <style name="BookEditorNameInput" parent="FullWidth">
         <item name="android:hint">@string/title</item>
-        <item name="android:inputType">textCapWords</item>
+        <item name="android:inputType">textMultiLine</item>
     </style>
 
     <style name="BookEditorPriceLayout" parent="FullWidth">
@@ -165,7 +165,7 @@
     </style>
 
     <style name="BookEditorQuantityAdjustLayout" parent="FullWidth">
-        <item name="android:layout_marginTop">@dimen/dp_medium</item>
+        <item name="android:layout_marginTop">@dimen/dp_large</item>
         <item name="android:orientation">horizontal</item>
     </style>
 
@@ -179,6 +179,20 @@
         <item name="android:layout_width">@dimen/dp_zero</item>
         <item name="android:layout_weight">1</item>
         <item name="android:text">@string/order_another_book</item>
+    </style>
+
+    <style name="BookEditorSupplierSpinner" parent="FullWidth">
+        <item name="android:layout_height">@dimen/supplier_spinner_height</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="BookEditorCoverImage" parent="WrapContent">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:maxWidth">@dimen/max_cover_width</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="SupplierLayout" parent="FullWidth">

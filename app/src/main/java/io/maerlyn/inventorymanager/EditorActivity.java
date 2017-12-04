@@ -9,11 +9,14 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,16 +24,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.maerlyn.inventorymanager.data.Inventory;
 import io.maerlyn.inventorymanager.model.Book;
 import io.maerlyn.inventorymanager.model.Supplier;
@@ -40,28 +46,29 @@ import io.maerlyn.inventorymanager.model.Supplier;
  */
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
-
+    public static final String LOG_TAG = EditorActivity.class.getSimpleName();
+    public static final int PICK_IMAGE = 1;
     // id for the data loader
     private static final int EXISTING_BOOK_LOADER = 0;
     AlertDialog supplierSwitcher;
     List<Supplier> suppliers;
     int newSupplierId = 0;
-
-    // uri of the book we're editing
-    private Uri bookUri;
-
-    // true if we're adding a new book
-    private boolean isNewBook = false;
-
     @BindView(R.id.edit_book_name)
     EditText bookTitle;
-
     @BindView(R.id.edit_book_price)
     EditText bookPrice;
-
     @BindView(R.id.edit_book_quantity)
     EditText bookQuantity;
-
+    @BindView(R.id.book_cover_image)
+    ImageView bookCover;
+    @BindView(R.id.sell_book)
+    Button sellBtn;
+    @BindView(R.id.order_book)
+    Button orderBtn;
+    // uri of the book we're editing
+    private Uri bookUri;
+    // true if we're adding a new book
+    private boolean isNewBook = false;
     private Book book;
 
     // keeps track of whether there have been any data modifications
@@ -73,6 +80,7 @@ public class EditorActivity extends AppCompatActivity implements
         hasBookChanged = true;
         return false;
     };
+    private Uri newImageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +99,8 @@ public class EditorActivity extends AppCompatActivity implements
             this.isNewBook = true;
             setTitle(getString(R.string.add_new_book));
 
+            bookCover.setImageResource(R.drawable.blank_cover);
+
             LinearLayout supplierLayout = findViewById(R.id.supplierLayout);
             supplierLayout.setVisibility(View.GONE);
 
@@ -104,10 +114,6 @@ public class EditorActivity extends AppCompatActivity implements
         bookTitle.setOnTouchListener(touchListener);
         bookPrice.setOnTouchListener(touchListener);
         bookQuantity.setOnTouchListener(touchListener);
-
-        // quantity adjustment buttons
-        Button sellBtn = findViewById(R.id.sell_book);
-        Button orderBtn = findViewById(R.id.order_book);
 
         if (isNewBook) {
             sellBtn.setVisibility(View.GONE);
@@ -318,6 +324,20 @@ public class EditorActivity extends AppCompatActivity implements
             return false;
         }
 
+        if (newImageUri != null){
+            Bitmap bitmap = null;
+            try {
+                bitmap = ImageUtil.getImage(this.newImageUri, this);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Unable to load image from uri", e);
+            }
+
+            if (bitmap != null){
+                this.book.setImage(ImageUtil.getBytes(bitmap));
+            }
+
+        }
+
         if (isNewBook) {
             this.book.setSupplier(suppliers.get(newSupplierId));
             long newBookId = Inventory.insert(this.book, this);
@@ -414,6 +434,9 @@ public class EditorActivity extends AppCompatActivity implements
             this.bookPrice.setText(this.book.getPriceString());
             this.bookQuantity.setText(String.valueOf(book.getQuantity()));
 
+            Bitmap coverBitmap = ImageUtil.getImage(this.book.getImage());
+            this.bookCover.setImageBitmap(coverBitmap);
+
             setupSupplierSection(this.book.getSupplier());
         }
     }
@@ -463,6 +486,44 @@ public class EditorActivity extends AppCompatActivity implements
         setupSupplierSection(newSupplier);
 
         // don't persist any data until the user presses save
+    }
+
+    /**
+     * Pick a new cover image for this book
+     */
+    @OnClick(R.id.book_cover_image)
+    void selectImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+
+        startActivityForResult(intent, PICK_IMAGE);
+    }
+
+    /**
+     * Process an image that a user has selected from the gallery
+     *
+     * @param requestCode code of the request
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+            // make sure to confirm changes before navigating away
+            this.hasBookChanged = true;
+
+            // save the image url
+            this.newImageUri = data.getData();
+
+            Bitmap bitmap = null;
+            try {
+                bitmap = ImageUtil.getImage(this.newImageUri, this);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Unable to load image from uri", e);
+            }
+
+            bookCover.setImageBitmap(bitmap);
+        }
     }
 
     /**

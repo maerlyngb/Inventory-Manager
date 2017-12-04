@@ -11,27 +11,27 @@ public class Book {
     private String name;
     private int price = 0;
     private int quantity = 0;
-    private int imageResourceId = 0;
+    private byte[] image;
 
     public Book() {
 
     }
 
-    public Book(long id, Supplier supplier, String name, int price, int quantity, int imageResourceId) {
+    public Book(long id, Supplier supplier, String name, int price, int quantity, byte[] image) {
         this.id = id;
         this.supplier = supplier;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-        this.imageResourceId = imageResourceId;
+        this.image = image;
     }
 
-    public Book(Supplier supplier, String name, int price, int quantity, int imageResourceId) {
+    public Book(Supplier supplier, String name, int price, int quantity, byte[] image) {
         this.supplier = supplier;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-        this.imageResourceId = imageResourceId;
+        this.image = image;
     }
 
     public long getId() {
@@ -80,8 +80,12 @@ public class Book {
         this.quantity = quantity;
     }
 
-    public int getImageResourceId() {
-        return imageResourceId;
+    public void setImage(byte[] image){
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
     }
 
     /**

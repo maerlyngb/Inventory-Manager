@@ -3,8 +3,6 @@ package io.maerlyn.inventorymanager;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +29,7 @@ public class InventoryCursorAdapter extends CursorAdapter {
      * @param context The context
      * @param cursor  The cursor from which to get the data.
      */
-    public InventoryCursorAdapter(Context context, Cursor cursor) {
+    InventoryCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
     }
 
@@ -73,7 +71,7 @@ public class InventoryCursorAdapter extends CursorAdapter {
 
         // Update the TextViews with the attributes for the current pet
         holder.nameView.setText(book.getName());
-        holder.priceView.setText(context.getString(R.string.currency_symbol) + book.getPriceString());
+        holder.priceView.setText(context.getString(R.string.currency_symbol, book.getPriceString()));
         holder.quantityView.setText(String.valueOf(book.getQuantity()));
         holder.sellBook.setOnClickListener(btn -> sellBook(book, context));
     }
@@ -96,12 +94,16 @@ public class InventoryCursorAdapter extends CursorAdapter {
      * Holds references to views to improve performance
      */
     static class ViewHolder {
-        @BindView(R.id.book_name) TextView nameView;
-        @BindView(R.id.book_price) TextView priceView;
-        @BindView(R.id.book_quantity) TextView quantityView;
-        @BindView(R.id.sell_book) AppCompatImageButton sellBook;
+        @BindView(R.id.book_name)
+        TextView nameView;
+        @BindView(R.id.book_price)
+        TextView priceView;
+        @BindView(R.id.book_quantity)
+        TextView quantityView;
+        @BindView(R.id.sell_book)
+        AppCompatImageButton sellBook;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
     }

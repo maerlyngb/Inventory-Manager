@@ -277,7 +277,7 @@ public class Inventory {
         values.put(BookEntry.COLUMN_BOOK_TITLE, book.getName());
         values.put(BookEntry.COLUMN_BOOK_PRICE, book.getPrice());
         values.put(BookEntry.COLUMN_BOOK_QUANTITY, book.getQuantity());
-        values.put(BookEntry.COLUMN_BOOK_IMAGE, book.getImageResourceId());
+        values.put(BookEntry.COLUMN_BOOK_IMAGE, book.getImage());
         values.put(BookEntry.COLUMN_BOOK_SUPPLIER_ID, book.getSupplier().getId());
         return values;
     }
@@ -336,9 +336,9 @@ public class Inventory {
                         ? cursor.getInt(quantityIndex)
                         : 0;
 
-                int image = imageIndex >= 0
-                        ? cursor.getInt(imageIndex)
-                        : 0;
+                byte[] image = imageIndex >= 0
+                        ? cursor.getBlob(imageIndex)
+                        : new byte[0];
 
                 // create book object from cursor data
                 book = new Book(
@@ -430,7 +430,7 @@ public class Inventory {
                                 BookEntry.COLUMN_BOOK_PRICE)),
                         cursor.getInt(cursor.getColumnIndex(
                                 BookEntry.COLUMN_BOOK_QUANTITY)),
-                        cursor.getInt(cursor.getColumnIndex(
+                        cursor.getBlob(cursor.getColumnIndex(
                                 BookEntry.COLUMN_BOOK_IMAGE))
                 );
 
@@ -540,6 +540,6 @@ public class Inventory {
                 cursor.getString(bookTitleIndex),
                 cursor.getInt(bookPriceIndex),
                 cursor.getInt(bookQuantityIndex),
-                cursor.getInt(bookImageIndex));
+                cursor.getBlob(bookImageIndex));
     }
 }

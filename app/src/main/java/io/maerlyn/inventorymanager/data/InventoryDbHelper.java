@@ -3,9 +3,14 @@ package io.maerlyn.inventorymanager.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.List;
 
 import io.maerlyn.inventorymanager.data.InventoryContract.BookEntry;
 import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
+import io.maerlyn.inventorymanager.model.Book;
+import io.maerlyn.inventorymanager.model.Supplier;
 
 /**
  * Helper class for working with the application database
@@ -14,7 +19,7 @@ import io.maerlyn.inventorymanager.data.InventoryContract.SupplierEntry;
  */
 public class InventoryDbHelper extends SQLiteOpenHelper {
 
-    private static final String LOG_TAG = InventoryDbHelper.class.getSimpleName();
+    public static final String LOG_TAG = InventoryDbHelper.class.getSimpleName();
 
     // name of the database file
     private static final String DATABASE_NAME = "inventory.db";
@@ -24,6 +29,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
     private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS";
     private static final String TEXT = "TEXT";
     private static final String INTEGER = "INTEGER";
+    private static final String BLOB = "BLOB";
     private static final String NOT_NULL = "NOT NULL";
     private static final String TEXT_NOT_NULL = TEXT + " " + NOT_NULL;
     private static final String INTEGER_NOT_NULL = INTEGER + " " + NOT_NULL;
@@ -39,10 +45,12 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
 
 
     // DB version. this must be incremented if the schema changes
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // instance of this class for application use
     private static InventoryDbHelper instance;
+
+    Context context;
 
     /**
      * This class should not be directly instantiated.
@@ -52,6 +60,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
      */
     private InventoryDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     /**
@@ -135,7 +144,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
             name TEXT NOT NULL,
             price INTEGER NOT NULL DEFAULT 0,
             quantity INTEGER NOT NULL DEFAULT 0,
-            image INTEGER,
+            image BLOB,
             FOREIGN KEY (supplier_id) REFERENCES supplier (_id)
         );
          */
@@ -146,7 +155,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                 BookEntry.COLUMN_BOOK_TITLE + SPACE + TEXT_NOT_NULL + CONT +
                 BookEntry.COLUMN_BOOK_PRICE + SPACE + INTEGER_NOT_NULL + SPACE + DEFAULT + SPACE + zero + CONT +
                 BookEntry.COLUMN_BOOK_QUANTITY + SPACE + INTEGER_NOT_NULL + SPACE + DEFAULT + SPACE + zero + CONT +
-                BookEntry.COLUMN_BOOK_IMAGE + SPACE + INTEGER + CONT +
+                BookEntry.COLUMN_BOOK_IMAGE + SPACE + BLOB + CONT +
                 FOREIGN_KEY + SPACE + BL + BookEntry.COLUMN_BOOK_SUPPLIER_ID + BR + SPACE +
                 REFERENCES + SPACE + SupplierEntry.TABLE_NAME + SPACE + BL + SupplierEntry._ID + BR +
                 BR + STATEMENT_END);
@@ -165,6 +174,32 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int prevVersion, int newVersion) {
-        // migrate data and update
+        if (prevVersion != newVersion) {
+
+            // load all table data
+//            List<Supplier> suppliers = Inventory.getAllSuppliers(this.context);
+//            List<Book> books = Inventory.getAllBooks(this.context);
+
+            // drop current tables
+//            db.execSQL(DROP_TABLE_IF_EXISTS + SPACE + BookEntry.TABLE_NAME);
+//            db.execSQL(DROP_TABLE_IF_EXISTS + SPACE + SupplierEntry.TABLE_NAME);
+//
+//            // recreate database
+//            createSupplierTable(db);
+//            createBookTable(db);
+//
+//            // reinsert data
+//            try {
+//                for (Supplier supplier : suppliers) {
+//                    Inventory.insert(supplier, context);
+//                }
+//
+//                for (Book book : books) {
+//                    Inventory.insert(book, context);
+//                }
+//            } catch (Exception e) {
+//                Log.e(LOG_TAG, "Could not migrate data to new schema", e);
+//            }
+        }
     }
 }

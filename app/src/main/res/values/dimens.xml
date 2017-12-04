@@ -22,4 +22,7 @@
 
     <dimen name="fab_margin">@dimen/dp_medium</dimen>
     <dimen name="inventory_item_padding">@dimen/dp_medium</dimen>
+
+    <dimen name="supplier_spinner_height">48dp</dimen>
+    <dimen name="max_cover_width">150dp</dimen>
 </resources>

@@ -13,7 +13,7 @@ public class SpinnerOption {
         return KEY_SETID;
     }
 
-    public void setKEY_SETID(String kEY_SETID) {
+    void setKEY_SETID(String kEY_SETID) {
         KEY_SETID = kEY_SETID;
     }
 
@@ -21,7 +21,7 @@ public class SpinnerOption {
         return KEY_SETNAME;
     }
 
-    public void setKEY_SETNAME(String kEY_SETNAME) {
+    void setKEY_SETNAME(String kEY_SETNAME) {
         KEY_SETNAME = kEY_SETNAME;
     }
 
