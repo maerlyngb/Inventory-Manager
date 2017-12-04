@@ -77,7 +77,7 @@
         <item name="srcCompat">@drawable/ic_add</item>
     </style>
 
-    <style name="InventoryList" parent="MatchParent">
+    <style name="InventoryList" parent="FullWidth">
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">@dimen/sp_small</item>
         <item name="android:padding">@dimen/sp_small</item>

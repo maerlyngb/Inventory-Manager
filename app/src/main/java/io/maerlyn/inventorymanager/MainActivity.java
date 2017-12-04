@@ -6,17 +6,22 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.maerlyn.inventorymanager.data.Inventory;
 import io.maerlyn.inventorymanager.data.InventoryContract;
 import io.maerlyn.inventorymanager.model.Book;
@@ -34,16 +39,24 @@ public class MainActivity extends AppCompatActivity implements
     // Adapter for the ListView to display the inventory summary
     InventoryCursorAdapter cursorAdapter;
 
+    @BindView(R.id.loading_spinner)
+    ProgressBar loadingSpinner;
+
+    @BindView(R.id.inventory_list)
+    ListView inventoryListView;
+
+    @BindView(R.id.empty_view)
+    View emptyView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inventory summary view
-        ListView inventoryListView = findViewById(R.id.inventory_list);
+        // bind annotated views
+        ButterKnife.bind(this);
 
         // the empty view will only be displayed when we can't get any data from the database
-        View emptyView = findViewById(R.id.empty_view);
         inventoryListView.setEmptyView(emptyView);
 
         // adapter used to display inventory data
@@ -135,7 +148,9 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_insert_dummy_data:
-                insertDummyData();
+                AsyncSampleDataInserter sampleDataInserter = new AsyncSampleDataInserter();
+                sampleDataInserter.execute();
+                showSpinner();
                 return true;
             case R.id.action_delete_all_entries:
                 deleteAllData();
@@ -262,5 +277,28 @@ public class MainActivity extends AppCompatActivity implements
         long timeMachineid = Inventory.insert(timeMachine, this);
         timeMachine.setId(timeMachineid);
 
+    }
+
+    private void showSpinner() {
+        this.emptyView.setVisibility(View.GONE);
+        this.loadingSpinner.setVisibility(View.VISIBLE);
+    }
+
+    private void hideSpinner() {
+        this.loadingSpinner.setVisibility(View.GONE);
+    }
+
+    private class AsyncSampleDataInserter extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            insertDummyData();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            hideSpinner();
+        }
     }
 }

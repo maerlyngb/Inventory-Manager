@@ -2,6 +2,7 @@
 
 <!-- Inventory Catalog -->
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/InventoryListContainer">
 
     <!-- Inventory Items -->
@@ -24,12 +25,12 @@
         <ImageView
             android:id="@+id/closed_image"
             style="@style/InventoryListEmptyImage"
-            android:contentDescription="@string/closed_image"/>
+            android:contentDescription="@string/closed_image" />
 
         <!-- No data message -->
         <TextView
             android:id="@+id/no_data_msg"
-            style="@style/InventoryListEmptyMessage"/>
+            style="@style/InventoryListEmptyMessage" />
 
         <!-- No data helper message -->
         <TextView
@@ -37,5 +38,13 @@
             style="@style/InventoryListEmptyHelper" />
 
     </android.support.constraint.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>
